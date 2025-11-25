@@ -56,7 +56,7 @@ export default function Hero({
                     {/* <span className="block text-anime-pink mb-2 text-5xl">MajutsuCity:</span> */}
                     <div className="flex flex-col items-center">
                         <Image
-                            src="/images/logo2.png"
+                            src="images/logo2.png"
                             alt="logo"
                             width={0}
                             height={0}
