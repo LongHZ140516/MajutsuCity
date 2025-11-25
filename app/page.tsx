@@ -31,7 +31,7 @@ export default function Home() {
           <div className="flex flex-col items-center gap-4 mt-8">
             <div className="relative w-full">
               <Image
-                src="/images/flag.jpg"
+                src="images/flag.jpg"
                 alt="MajutsuCity Overview"
                 width={0}
                 height={0}
@@ -58,7 +58,7 @@ export default function Home() {
           <div className="flex flex-col items-center gap-4">
             <div className="relative w-full">
               <Image
-                src="/images/pipeline.jpg"
+                src="images/pipeline.jpg"
                 alt="Methodology Pipeline"
                 width={0}
                 height={0}
@@ -114,7 +114,7 @@ export default function Home() {
           <div className="flex flex-col items-center gap-4">
             <div className="relative w-[60vw]">
               <Image
-                src="/images/dataset.png"
+                src="images/dataset.png"
                 alt="MajutsuDataset"
                 width={0}
                 height={0}
@@ -143,7 +143,7 @@ export default function Home() {
             </p>
             <div className="relative w-full pb-1 flex justify-center">
               <Image
-                src="/images/quantitative_layout.jpg"
+                src="images/quantitative_layout.jpg"
                 alt="layout table"
                 width={0}
                 height={0}
@@ -155,7 +155,7 @@ export default function Home() {
           <div className="flex flex-col items-center gap-4">
             <div className="relative w-full pb-1 flex justify-center">
               <Image
-                src="/images/layout.jpg"
+                src="images/layout.jpg"
                 alt="Layout Result"
                 width={0}
                 height={0}
@@ -173,7 +173,7 @@ export default function Home() {
             </p>
             <div className="relative w-full pb-1 flex justify-center">
               <Image
-                src="/images/quantitative_scene.jpg"
+                src="images/quantitative_scene.jpg"
                 alt="Scene table"
                 width={0}
                 height={0}
@@ -185,7 +185,7 @@ export default function Home() {
           <div className="flex flex-col items-center gap-4 mb-4">
             <div className="relative w-full">
               <Image
-                src="/images/scene.jpg"
+                src="images/scene.jpg"
                 alt="scene Result"
                 width={0}
                 height={0}
@@ -201,7 +201,7 @@ export default function Home() {
         <div className="flex flex-col items-center gap-4">
           <div className="relative w-[full]">
             <Image
-              src="/images/four_styles.jpg"
+              src="images/four_styles.jpg"
               alt="4 styles Result"
               width={0}
               height={0}
