@@ -61,7 +61,7 @@
 }
 
 .bg-ghost-pattern {
-  background-image: url('images/magic.svg');
+  background-image: url('/images/magic.svg');
   background-size: 200px 200px;
   color: var(--anime-pink);
   background-position: 0 0;
