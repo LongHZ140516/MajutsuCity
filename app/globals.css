@@ -1,26 +1,83 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Custom Anime Theme Colors */
+  --color-anime-pink: var(--anime-pink);
+  --color-anime-pink-light: var(--anime-pink-light);
+  --color-anime-blue: var(--anime-blue);
+  --color-anime-blue-light: var(--anime-blue-light);
+  --color-anime-purple: var(--anime-purple);
+  --color-anime-purple-light: var(--anime-purple-light);
+  --color-anime-gray: var(--anime-gray);
+  --color-anime-gray-light: var(--anime-gray-light);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* Vibrant but pastel anime colors */
+  --anime-pink: #ff7eb3;
+  --anime-pink-light: #fef4f7;
+  --anime-blue: #6db4f8;
+  --anime-blue-light: #e3f2ff;
+  --anime-purple: #bd93f9;
+  --anime-purple-light: #f3e5f5;
+  --anime-gray: #94a3b8;
+  --anime-gray-light: #f1f5f9b3;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+.bg-ghost-pattern {
+  background-image: url('/magic.svg');
+  background-size: 200px 200px;
+  color: var(--anime-pink);
+  background-position: 0 0;
+  background-repeat: repeat;
+  opacity: 0.1;
+  rotate: 0deg;
+
+  animation: scroll-diagonal 20s linear infinite;
+}
+
+@keyframes scroll-diagonal {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 240px 240px;
+  }
 }
