@@ -16,7 +16,7 @@ export default function Navbar() {
                 <Link href="/" className="text-anime-pink hover:text-anime-pink/70 transition-colors">
                     <Home className="w-6 h-6" />
                 </Link>
-                <Link href="/" target="_blank" className="text-anime-pink hover:text-anime-pink/70 transition-colors">
+                <Link href="https://arxiv.org/abs/2511.20415" target="_blank" className="text-anime-pink hover:text-anime-pink/70 transition-colors">
                     <FileText className="w-6 h-6" />
                 </Link>
                 <Link href="https://github.com/LongHZ140516/MajutsuCity" target="_blank" className="text-anime-pink hover:text-anime-pink/70 transition-colors">
