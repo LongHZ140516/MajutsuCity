@@ -22,7 +22,7 @@ interface HeroProps {
 const authors = [
     { name: "Zilong Huang", link: "https://serein-six.vercel.app/", avatar: "avatar/zilonghuang.jpg", initial: "ZH", superscript: "1,*" },
     { name: "Jun He", link: "https://github.com/Hejun0915", avatar: "avatar/junhe.jpg", initial: "JH", superscript: "1,*" },
-    { name: "Xiaobin Huang", link: "https://yejy53.github.io/", avatar: "avatar/xiaobinhuang.jpg", initial: "XH", superscript: "1" },
+    { name: "Xiaobin Huang", link: "#", avatar: "avatar/xiaobinhuang.jpg", initial: "XH", superscript: "1" },
     { name: "Ziyi Xiong", link: "#", avatar: "avatar/ziyixiong.jpg", initial: "ZX", superscript: "1" },
     { name: "Yang Luo", link: "https://scholar.google.com.hk/citations?user=FAY1XUMAAAAJ&hl=zh-CN", avatar: "avatar/yangluo.jpg", initial: "YL", superscript: "1" },
     { name: "Junyan Ye", link: "https://yejy53.github.io/", avatar: "avatar/junyanye.jpg", initial: "JY", superscript: "1" },
@@ -112,14 +112,14 @@ export default function Hero({
                     className="flex flex-wrap justify-center gap-4 mt-8"
                 >
                     <Link
-                        href="#"
+                        href="https://arxiv.org/abs/2511.20415"
                         className="flex items-center gap-2 px-6 py-3 rounded-xl bg-anime-pink text-white font-bold shadow-lg hover:bg-anime-pink/90 hover:scale-105 transition-all duration-200"
                     >
                         <FileText className="w-5 h-5" />
                         <span>Arxiv</span>
                     </Link>
                     <Link
-                        href="#"
+                        href="https://github.com/LongHZ140516/MajutsuCity"
                         className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-slate-700 font-bold shadow-lg border border-slate-200 hover:bg-slate-50 hover:scale-105 transition-all duration-200"
                     >
                         <Github className="w-5 h-5" />
