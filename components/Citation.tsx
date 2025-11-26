@@ -7,11 +7,15 @@ import { cn } from "@/lib/utils";
 export default function Citation() {
     const [copied, setCopied] = useState(false);
 
-    const bibtex = `@article{majutsu2024city,
-  title={MajutsuCity: Language-driven Aesthetic-adaptive City Generation with Controllable 3D Assets and Layouts},
-  author={Huang, Zilong and He, Jun and Huang, Xiaobin and Xiong, Ziyi and Luo, Yang and Ye, Junyan and Li, Weijia and Chen, Yiping and Han, Ting},
-  journal={arXiv preprint arXiv:24xx.xxxxx},
-  year={2024}
+    const bibtex = `@misc{huang2025majutsucitylanguagedrivenaestheticadaptivecity,
+      title={MajutsuCity: Language-driven Aesthetic-adaptive City Generation with Controllable 3D Assets and Layouts}, 
+      author={Zilong Huang and Jun He and Xiaobin Huang and Ziyi Xiong and Yang Luo and Junyan Ye and Weijia Li and Yiping Chen and Ting Han},
+      year={2025},
+      eprint={2511.20415},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2511.20415}, 
+}
 }`;
 
     const handleCopy = async () => {
