@@ -14,6 +14,9 @@
   <a href="https://longhz140516.github.io/MajutsuCity/" target="_blank">
     <img src="https://img.shields.io/badge/-ProjectPage-%23FF7FAE?style=flat&logo=googlechrome&logoColor=white&labelColor=%23FF7FAE" alt="Project Page">
   </a>
+  <a href="[https://longhz140516.github.io/MajutsuCity/](https://huggingface.co/datasets/SereinH/MajutsuDataset)" target="_blank">
+    <img src="https://img.shields.io/badge/-Dataset-FFD21E?style=flat&logo=huggingface&logoColor=white&labelColor=FFD21E" alt="Project Page">
+  </a>
 </p>
 
 <p align="center">
@@ -28,7 +31,7 @@
 </p>
 
 ## 📜 TODO List
-- [ ] Release ${\color{#8D88E2}MajutsuDataset}$
+- [x] Release ${\color{#8D88E2}MajutsuDataset}$
 - [ ] Release ${\color{#6EB4F9}MajutsuCity}$
   - [ ] Layout Generation model
   - [ ] Material texture fintuned model
@@ -49,3 +52,4 @@
   year={2025}
 }
 ```
+
