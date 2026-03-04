@@ -59,12 +59,6 @@ Download the [*layout ckpt model*](https://huggingface.co/SereinH/MajutsuCity/tr
 
 (If you want to train the model, please refer to the instructions of [Layout Training README](./layout_gen/README.md).)
 
-```bash
-cd layout_gen
-# Layout Case
-python xxx.py
-```
-
 ### Texture / Skybox Generation
 
 Download the [*texture ckpt model*](https://huggingface.co/SereinH/MajutsuCity/tree/main/layout) to the folder `ckpt/texture`
