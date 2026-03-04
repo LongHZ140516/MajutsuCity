@@ -1,0 +1,1 @@
+amsterdam_tile_2_15_bld_instance_u8.png	/YourDatasetPath/seg/amsterdam_tile_2_15_seg_color.png	/YourDatasetPath/depth/amsterdam_tile_2_15_bld_instance_u8.png

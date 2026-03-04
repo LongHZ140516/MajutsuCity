@@ -1,0 +1,47 @@
+name: majutsucity
+channels:
+  - pytorch
+  - nvidia
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+  - pytorch=2.5.1
+  - torchvision=0.20.1
+  - torchaudio=2.5.1
+  - pytorch-cuda=12.1
+  - numpy=1.26.4
+  - pip:
+      - accelerate==1.9.0
+      - deepspeed==0.17.4
+      - einops==0.8.0
+      - transformers==4.55.0
+      - huggingface-hub==0.34.3
+      - datasets==3.2.0 
+      - peft==0.17.0
+      - optimum-quanto==0.2.7
+      - bitsandbytes
+      
+      - git+https://github.com/huggingface/diffusers.git
+      - open_clip_torch>=2.24.0
+      - qwen_vl_utils==0.0.11
+      
+      - opencv-python==4.12.0.88
+      - albumentations==1.4.0
+      - imageio>=2.30.0
+      - kornia>=0.7.0
+      - timm==1.0.19
+      - basicsr>=1.4.2
+      
+      - omegaconf
+      - loguru
+      - wandb
+      - sentencepiece
+      - matplotlib
+      - onnxruntime-gpu==1.20.0
+      
+      - pytorch-lightning>=2.4.0
+      - torchmetrics>=1.4.0
+      - safetensors>=0.4.0
+      - fvcore
+      - pycocotools
