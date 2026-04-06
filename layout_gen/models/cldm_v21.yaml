@@ -82,4 +82,3 @@ model:
       target: ldm.modules.encoders.modules.FrozenLongCLIPEmbedder
       params:
         freeze: True
-        layer: "penultimate"

@@ -25,7 +25,9 @@ class ControlledUnetModel(UNetModel):
         with torch.no_grad():
             t_emb = timestep_embedding(timesteps, self.model_channels, repeat_only=False)
             emb = self.time_embed(t_emb)
-            h = x.type(self.dtype)
+            # h = x.type(self.dtype)
+            h = x  # let AMP autocast manage dtype; self.dtype is fp32 and would
+                   # silently downgrade bf16 tensors back to fp32 inside this block
             for module in self.input_blocks:
                 h = module(h, emb, context)
                 hs.append(h)
@@ -289,7 +291,9 @@ class ControlNet(nn.Module):
 
         outs = []
 
-        h = x.type(self.dtype)
+        # h = x.type(self.dtype)
+        h = x  # let AMP autocast manage dtype; self.dtype is fp32 and would
+                # silently downgrade bf16 tensors back to fp32 inside this block
         for module, zero_conv in zip(self.input_blocks, self.zero_convs):
             if guided_hint is not None:
                 h = module(h, emb, context)
@@ -314,6 +318,13 @@ class ControlLDM(LatentDiffusion):
         self.only_mid_control = only_mid_control
         self.control_scales = [1.0] * 13
         self.global_average_pooling = global_average_pooling
+        # ddpm.py's instantiate_cond_stage() freezes ALL cond_stage params when
+        # cond_stage_trainable=False (including text_projection).  Re-enable it here
+        # so the projection from LongCLIP's 768-dim space to SD2.1's 1024-dim space
+        # can actually be learned during training.
+        if hasattr(self.cond_stage_model, 'text_projection'):
+            for param in self.cond_stage_model.text_projection.parameters():
+                param.requires_grad = True
 
     @torch.no_grad()
     def get_input(self, batch, k, bs=None, *args, **kwargs):
@@ -422,6 +433,13 @@ class ControlLDM(LatentDiffusion):
         if not self.sd_locked:
             params += list(self.model.diffusion_model.output_blocks.parameters())
             params += list(self.model.diffusion_model.out.parameters())
+            
+        # Include the LongCLIP text_projection so it is actually optimised.
+        # Without this the projection stays at random init and text conditioning
+        # is pure noise throughout training.
+        if hasattr(self.cond_stage_model, 'text_projection'):
+            params += list(self.cond_stage_model.text_projection.parameters())
+            
         opt = torch.optim.AdamW(params, lr=lr)
         return opt
 

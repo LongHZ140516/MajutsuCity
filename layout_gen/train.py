@@ -62,7 +62,15 @@ def main():
 
     # First use cpu to load models. Pytorch Lightning will automatically move it to GPUs.
     model = create_model(args.config_path).cpu()
-    model.load_state_dict(load_state_dict(args.model_path, location='cpu'), strict=False)
+    # Release any CUDA cache that sub-modules (e.g. longclip.load) may have left on
+    # GPU 0 during initialisation, before DDP assigns each process its own GPU.
+    torch.cuda.empty_cache()
+    # model.load_state_dict(load_state_dict(args.model_path, location='cpu'), strict=False)
+    state_dict = load_state_dict(args.model_path, location='cpu')
+    if "state_dict" in state_dict:
+        state_dict = state_dict["state_dict"]
+    filtered_dict = {k: v for k, v in state_dict.items() if not k.startswith("cond_stage_model.")}
+    model.load_state_dict(filtered_dict, strict=False)
     model.learning_rate = args.learning_rate
     model.sd_locked = args.sd_locked
     model.only_mid_control = args.only_mid_control

@@ -42,8 +42,27 @@ def main():
     pl.seed_everything(args.seed, workers=True)
 
     model = create_model(args.config_path).cpu()
-    model.load_state_dict(load_state_dict(args.model_path, location='cpu'), strict=False)
-    model = model.cuda()
+    # Release any CUDA cache left by sub-module __init__ calls (e.g. longclip.load)
+    # before DDP assigns each process its own GPU.
+    torch.cuda.empty_cache()
+
+    state_dict = load_state_dict(args.model_path, location='cpu')
+    if "state_dict" in state_dict:
+        state_dict = state_dict["state_dict"]
+
+    # Exclude the frozen LongCLIP backbone (already loaded from the .pt file by
+    # create_model), but DO load the trained text_projection so text conditioning
+    # actually works at inference time.
+    filtered_dict = {
+        k: v for k, v in state_dict.items()
+        if not k.startswith("cond_stage_model.")
+        or k.startswith("cond_stage_model.text_projection")
+    }
+    model.load_state_dict(filtered_dict, strict=False)
+    # Do NOT call model.cuda() here — with DDP each process has its own GPU and
+    # Lightning's model_to_device() will move the model to the correct device.
+    # Calling .cuda() before DDP setup sends everything to GPU 0 across all 8
+    # processes simultaneously, causing OOM.
     model.eval()
 
     image_size = (args.image_width, args.image_height)

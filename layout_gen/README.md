@@ -1,4 +1,4 @@
-# ControlNet Inference Demo
+# Layout and Height Generation Inference Demo
 
 This repository contains a standalone inference script (`demo.py`) for generating images using trained ControlNet checkpoints. The script is streamlined for single-image generation and supports two primary tasks in the pipeline:
 1. **Layout Generation**: Generating a semantic layout based purely on a text prompt.
@@ -29,7 +29,7 @@ python demo.py \
     --config_path /path/to/models/cldm_v21.yaml \
     --model_path /path/to/your/layout_generation_model.ckpt \
     --result_dir ./results/demo_layout \
-    --text_prompt "The road network (red) features a main east-west artery crossing the center, connected to parallel north-south roads in the west forming a grid, and curving roads in the east. Buildings (yellow) are dense, rectangular clusters in the west and irregular/L-shaped in the east. Vegetation (green) forms linear belts alongside the central water body and roads, with contiguous patches separating built areas. A central, north-south oriented river (blue) divides the image, crossed by a main road, with another water segment in the southeast." \
+    --text_prompt "The road network (red) is prominent: a main north-south road in the east intersects a major east-west artery centrally, featuring a merge point. Secondary roads branch westward, including a curvilinear segment in the northwest and a network in the southwest, connecting all areas. Buildings (yellow), predominantly rectangular, are densely clustered alongside these roads. Vegetation (green) appears as a large, contiguous patch in the northeast, bordering the main north-south road, with a smaller patch near the central intersection." \
     --image_width 512 \
     --image_height 512 \
     --seed 42
