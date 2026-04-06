@@ -7,7 +7,7 @@ from huggingface_hub import hf_hub_download
 
 import open_clip
 from ldm.util import default, count_params
-
+import os
 from model import longclip
 
 class AbstractEncoder(nn.Module):
@@ -252,12 +252,20 @@ class FrozenLongCLIPEmbedder(AbstractEncoder):
         self.model = self.model.eval()
         for param in self.parameters():
             param.requires_grad = False
+        
+        for param in self.text_projection.parameters():
+            param.requires_grad = True
 
     def forward(self, text):
-        # Use the tokenize function from your imported longclip module
-        text = longclip.tokenize(text, truncate=True).to(self.device)
+        # Use the actual device of text_projection instead of the hardcoded
+        # 'cuda' string, which is unsafe under multi-GPU DDP where each process
+        # may own a different device (cuda:0, cuda:1, …).
+        device = self.text_projection.weight.device
+        text = longclip.tokenize(text, truncate=True).to(device)
         z = self.model.encode_text_full(text)
+        z = self.text_projection(z)
         return z
+
 
     def encode(self, text):
         return self(text)
