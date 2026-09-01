@@ -14,7 +14,7 @@ conda activate majutsucity
 
 `environment.yml` installs the curated Hunyuan runtime, the Qwen /
 Syncity overlay, the common pipeline packages and the optional layout packages.
-It does not download any model weights or the external Hunyuan3D source tree.
+It does not download any model weights or external Hunyuan3D source trees.
 
 For an existing compatible Python 3.10 environment, the equivalent unified
 Python dependency entry point is:
@@ -27,10 +27,16 @@ The root file includes the Hunyuan3D runtime, framework overlay, common
 pipeline and layout dependency groups under `requirements/` in installation
 order.
 
-Place the upstream Hunyuan3D-2.1 repository at `external/Hunyuan3D-2.1`, then
-compile its two local extensions with the active environment:
+Place the upstream Hunyuan3D-Omni and Hunyuan3D-2.1 repositories at
+`external/Hunyuan3D-Omni` and `external/Hunyuan3D-2.1`. The Omni source provides
+point-controlled shape generation; the 2.1 source provides PBR painting. Compile
+the two 2.1 paint extensions with the active environment:
 
 ```bash
+mkdir -p external
+git clone https://github.com/Tencent-Hunyuan/Hunyuan3D-Omni.git external/Hunyuan3D-Omni
+git clone https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1.git external/Hunyuan3D-2.1
+
 cd external/Hunyuan3D-2.1/hy3dpaint/custom_rasterizer
 python -m pip install -e .
 
@@ -50,7 +56,7 @@ The pinned baseline is:
 - Python 3.10
 - PyTorch 2.6.0 + CUDA 12.4
 - torchvision 0.21.0 + CUDA 12.4
-- Hunyuan3D shape/paint extensions and `bpy` 4.0
+- Hunyuan3D-Omni shape, Hunyuan3D-2.1 paint extensions, and `bpy` 4.0
 - Diffusers 0.37.1 and Transformers 4.57.3
 - PEFT 0.17.0 for the Texture/Skybox LoRA loaders
 - PyVista 0.46.5 and VTK 9.5.2

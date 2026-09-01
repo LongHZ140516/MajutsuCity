@@ -144,6 +144,12 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument(
+        "--point-samples",
+        type=int,
+        default=50,
+        help="Surface point count used by Hunyuan3D-Omni (default: 50).",
+    )
     parser.add_argument("--qwen-steps", type=int, default=40)
     parser.add_argument("--qwen-cfg", type=float, default=4.0)
     parser.add_argument(
@@ -177,6 +183,12 @@ def parse_args() -> argparse.Namespace:
         help="Maximum Qwen generation attempts for each reviewed building.",
     )
     parser.add_argument("--shape-steps", type=int, default=50)
+    parser.add_argument(
+        "--shape-backend",
+        choices=("omni", "2.1"),
+        default="omni",
+        help="Shape generator; Omni uses the sampled building point cloud (default).",
+    )
     parser.add_argument("--shape-guidance", type=float, default=5.0)
     parser.add_argument("--octree-resolution", type=int, default=384)
     parser.add_argument(
@@ -214,6 +226,8 @@ def parse_args() -> argparse.Namespace:
         args.hunyuan_gpus = args.hunyuan_gpu
     if args.vlm_max_attempts <= 0:
         parser.error("--vlm-max-attempts must be positive.")
+    if args.point_samples <= 0:
+        parser.error("--point-samples must be positive.")
     return args
 
 
@@ -324,6 +338,10 @@ def qwen_command(
         gpu_group,
         "--seed",
         str(args.seed),
+        "--shape-backend",
+        args.shape_backend,
+        "--point-samples",
+        str(args.point_samples),
         "--steps",
         str(args.qwen_steps),
         "--true-cfg-scale",
@@ -364,6 +382,10 @@ def qwen_batch_command(
         gpu_group,
         "--seed",
         str(args.seed),
+        "--shape-backend",
+        args.shape_backend,
+        "--point-samples",
+        str(args.point_samples),
         "--steps",
         str(args.qwen_steps),
         "--true-cfg-scale",
@@ -404,6 +426,8 @@ def hunyuan_command(
         gpu_id,
         "--stage",
         "all",
+        "--shape-backend",
+        args.shape_backend,
         "--seed",
         str(args.seed),
         "--shape-steps",
@@ -439,6 +463,8 @@ def hunyuan_batch_command(
         gpu_id,
         "--stage",
         stage,
+        "--shape-backend",
+        args.shape_backend,
         "--seed",
         str(args.seed),
         "--shape-steps",
@@ -500,6 +526,8 @@ def write_manifest(
             "true_cfg_scale": args.qwen_cfg,
         },
         "hunyuan": {
+            "shape_backend": args.shape_backend,
+            "point_samples": args.point_samples,
             "gpus": args.hunyuan_gpu_ids,
             "shards": {
                 gpu_id: building_ids
@@ -770,6 +798,7 @@ def build_phase_commands(
                     "style": style,
                     "building_id": building_id,
                     "input_image": str(output_dir / "image_woBG.png"),
+                    "point_cloud": str(output_dir / "points_ascii.ply"),
                     "output_dir": str(output_dir),
                 }
             )

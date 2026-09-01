@@ -11,6 +11,8 @@ defaults:
   execution_order: phase
   building_scale_mode: depth
   building_ids: all
+  shape_backend: omni
+  point_samples: 50
   vlm_max_attempts: 3
   seed: 42
 

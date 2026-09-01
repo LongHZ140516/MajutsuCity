@@ -1,4 +1,4 @@
-# Runtime dependencies exercised by the local Hunyuan3D-2.1 shape/paint stages.
+# Runtime dependencies exercised by Hunyuan3D-Omni shape and Hunyuan3D-2.1 paint.
 # The CUDA custom rasterizer and mesh-inpaint extension are compiled separately;
 # see requirements/README.md. ML framework versions are pinned by the overlay.
 basicsr==1.4.2

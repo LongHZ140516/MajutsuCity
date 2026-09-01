@@ -18,10 +18,13 @@ paths:
     texture_lora: models/MajutsuCity/texture/Texture_Lora.safetensors
     skybox_lora: models/MajutsuCity/texture/SkyBox_Lora.safetensors
     rmbg: models/RMBG-2.0
+    hunyuan3d_omni: models/Hunyuan3D-Omni
     hunyuan3d: models/Hunyuan3D-2.1
+    dinov2_omni: models/dinov2-large
     dinov2: models/dinov2-giant
 
   external:
+    hunyuan3d_omni_repo: external/Hunyuan3D-Omni
     hunyuan3d_repo: external/Hunyuan3D-2.1
 
 layout_generation:

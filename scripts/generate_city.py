@@ -91,6 +91,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--stages", default=None)
     parser.add_argument("--building-ids", default=None)
     parser.add_argument(
+        "--shape-backend",
+        choices=("omni", "2.1"),
+        default=None,
+        help="Building shape generator; defaults to Hunyuan3D-Omni.",
+    )
+    parser.add_argument(
+        "--point-samples",
+        type=int,
+        default=None,
+        help="Surface point count used for Omni building control.",
+    )
+    parser.add_argument(
         "--layout-palette", choices=("citydreamer", "majutsu", "auto"), default=None
     )
     parser.add_argument(
@@ -136,6 +148,8 @@ def parse_args() -> argparse.Namespace:
         parser.error("--scene-prompt and --scene-plan are mutually exclusive.")
     if args.vlm_max_attempts <= 0:
         parser.error("--vlm-max-attempts must be positive.")
+    if args.point_samples is not None and args.point_samples <= 0:
+        parser.error("--point-samples must be positive.")
     return args
 
 
@@ -182,6 +196,8 @@ def controller_command(args: argparse.Namespace) -> list[str]:
     append_option(command, "--height-prompt", args.height_prompt)
     append_option(command, "--stages", args.stages)
     append_option(command, "--building-ids", args.building_ids)
+    append_option(command, "--shape-backend", args.shape_backend)
+    append_option(command, "--point-samples", args.point_samples)
     append_option(command, "--layout-palette", args.layout_palette)
     append_option(command, "--edit-profile", args.edit_profile)
     append_option(command, "--execution-order", args.execution_order)

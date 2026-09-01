@@ -213,6 +213,21 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument(
+        "--shape-backend",
+        choices=("omni", "2.1"),
+        default="omni",
+        help="Downstream shape backend; Omni requires sampled point clouds.",
+    )
+    parser.add_argument(
+        "--point-samples",
+        type=int,
+        default=50,
+        help=(
+            "Number of surface points saved for Hunyuan3D-Omni point control "
+            "for each building (default: 50)."
+        ),
+    )
     parser.add_argument("--steps", type=int, default=40)
     parser.add_argument("--true-cfg-scale", type=float, default=4.0)
     parser.add_argument(
@@ -461,6 +476,11 @@ def building_dir(case_name: str, assets_name: str, building_id: int) -> Path:
     )
 
 
+def required_render_names(shape_backend: str) -> tuple[str, ...]:
+    names = ("rgb.png", "depth.png")
+    return (*names, "points_ascii.ply") if shape_backend == "omni" else names
+
+
 def validate_gpu_spec(gpu_spec: str) -> None:
     gpu_ids = [item.strip() for item in gpu_spec.split(",") if item.strip()]
     if len(gpu_ids) != 2 or len(set(gpu_ids)) != 2:
@@ -523,7 +543,14 @@ def render_worker(args: argparse.Namespace, building_ids: Iterable[int]) -> None
         output_dir = building_dir(args.case_name, args.assets_name, building_id)
         rgb_path = output_dir / "rgb.png"
         depth_path = output_dir / "depth.png"
-        if not args.overwrite and rgb_path.is_file() and depth_path.is_file():
+        point_path = output_dir / "points_ascii.ply"
+        render_is_complete = (
+            not args.overwrite
+            and rgb_path.is_file()
+            and depth_path.is_file()
+            and (args.shape_backend == "2.1" or point_path.is_file())
+        )
+        if render_is_complete:
             print(f"[render] Keeping existing building_{building_id}", flush=True)
             continue
 
@@ -539,7 +566,20 @@ def render_worker(args: argparse.Namespace, building_ids: Iterable[int]) -> None
             export_osm=True,
         )
         renderer.save_render_image(rendered, str(output_dir))
-        print(f"[render] Saved building_{building_id}/rgb.png and depth.png", flush=True)
+        if args.shape_backend == "omni":
+            point_cloud = renderer.sample_points_from_mesh(
+                rendered["mesh"],
+                num_samples=args.point_samples,
+                with_normals=False,
+                method="barycentric",
+                seed=args.seed + building_id,
+            )
+            point_cloud.clear_data()
+            point_cloud.save(point_path, binary=False)
+            products = "rgb.png, depth.png and points_ascii.ply"
+        else:
+            products = "rgb.png and depth.png"
+        print(f"[render] Saved building_{building_id}/{products}", flush=True)
 
 
 def write_prompt_record(
@@ -866,6 +906,8 @@ def batch_worker_command(args: argparse.Namespace, worker: str) -> list[str]:
 def parent_main(args: argparse.Namespace) -> None:
     if args.vlm_max_attempts <= 0:
         raise ValueError("--vlm-max-attempts must be positive.")
+    if args.point_samples <= 0:
+        raise ValueError("--point-samples must be positive.")
     validate_common_paths(args)
     validate_gpu_spec(args.gpu)
     valid_ids = layout_building_ids(
@@ -897,17 +939,19 @@ def parent_main(args: argparse.Namespace) -> None:
         )
 
     if args.skip_render:
-        missing_rgb = [
-            building_dir(args.case_name, args.assets_name, building_id) / "rgb.png"
+        missing_render_assets = [
+            path
             for building_id in building_ids
-            if not (
-                building_dir(args.case_name, args.assets_name, building_id) / "rgb.png"
-            ).is_file()
+            for name in required_render_names(args.shape_backend)
+            for path in (
+                building_dir(args.case_name, args.assets_name, building_id) / name,
+            )
+            if not path.is_file()
         ]
-        if missing_rgb:
+        if missing_render_assets:
             raise FileNotFoundError(
-                "--skip-render requested but gray renders are missing:\n  "
-                + "\n  ".join(str(path) for path in missing_rgb)
+                "--skip-render requested but render/point-cloud assets are missing:\n  "
+                + "\n  ".join(str(path) for path in missing_render_assets)
             )
 
     if args.dry_run:
@@ -948,7 +992,6 @@ def batch_parent_main(args: argparse.Namespace) -> None:
     valid_ids = layout_building_ids(
         args.layout_path, palette_name=args.layout_palette
     )
-    building_count = len(valid_ids)
 
     print("Resolved persistent Qwen batch:")
     print(f"  physical GPUs: {args.gpu}")
@@ -972,23 +1015,24 @@ def batch_parent_main(args: argparse.Namespace) -> None:
         )
 
     if args.skip_render:
-        missing_rgb = []
+        missing_render_assets = []
         for spec in specs:
             for building_id in spec["building_ids"]:
-                path = (
+                directory = (
                     building_dir(
                         spec["case_name"],
                         spec["assets_name"],
                         building_id,
                     )
-                    / "rgb.png"
                 )
-                if not path.is_file():
-                    missing_rgb.append(path)
-        if missing_rgb:
+                for name in required_render_names(args.shape_backend):
+                    path = directory / name
+                    if not path.is_file():
+                        missing_render_assets.append(path)
+        if missing_render_assets:
             raise FileNotFoundError(
-                "--skip-render requested but gray renders are missing:\n  "
-                + "\n  ".join(str(path) for path in missing_rgb)
+                "--skip-render requested but render/point-cloud assets are missing:\n  "
+                + "\n  ".join(str(path) for path in missing_render_assets)
             )
 
     if args.dry_run:
@@ -1024,6 +1068,8 @@ def main() -> None:
     args = parse_args()
     if args.vlm_max_attempts <= 0:
         raise ValueError("--vlm-max-attempts must be positive.")
+    if args.point_samples <= 0:
+        raise ValueError("--point-samples must be positive.")
     args.layout_path = args.layout_path.expanduser().resolve()
     args.depth_path = args.depth_path.expanduser().resolve()
     args.prompt_file = args.prompt_file.expanduser().resolve()

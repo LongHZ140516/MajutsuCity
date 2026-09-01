@@ -99,6 +99,18 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--building-ids", default=str(pipeline_defaults["building_ids"]))
     parser.add_argument(
+        "--shape-backend",
+        choices=("omni", "2.1"),
+        default=str(pipeline_defaults.get("shape_backend", "omni")),
+        help="Building shape generator; Omni consumes the sampled point cloud (default).",
+    )
+    parser.add_argument(
+        "--point-samples",
+        type=int,
+        default=int(pipeline_defaults.get("point_samples", 50)),
+        help="Surface point count used for Omni building control (default: 50).",
+    )
+    parser.add_argument(
         "--layout-palette",
         choices=("citydreamer", "majutsu", "auto"),
         default=str(pipeline_defaults["layout_palette"]),
@@ -365,6 +377,39 @@ def runtime_environment(config: dict[str, Any]) -> dict[str, str]:
     )
     for variable, keys in mappings.items():
         environment[variable] = str(project_path(nested(config, *keys)))
+    environment["MAJUTSUCITY_HUNYUAN_OMNI_MODEL"] = str(
+        project_path(
+            optional_nested(
+                config,
+                "paths",
+                "models",
+                "hunyuan3d_omni",
+                default="models/Hunyuan3D-Omni",
+            )
+        )
+    )
+    environment["MAJUTSUCITY_OMNI_DINO_MODEL"] = str(
+        project_path(
+            optional_nested(
+                config,
+                "paths",
+                "models",
+                "dinov2_omni",
+                default="models/dinov2-large",
+            )
+        )
+    )
+    environment["MAJUTSUCITY_HUNYUAN_OMNI_REPO"] = str(
+        project_path(
+            optional_nested(
+                config,
+                "paths",
+                "external",
+                "hunyuan3d_omni_repo",
+                default="external/Hunyuan3D-Omni",
+            )
+        )
+    )
     return environment
 
 
@@ -685,6 +730,10 @@ def building_command(
         args.layout_palette,
         "--building-ids",
         args.building_ids,
+        "--shape-backend",
+        args.shape_backend,
+        "--point-samples",
+        str(args.point_samples),
         "--execution-order",
         args.execution_order,
         "--edit-profile",
@@ -815,6 +864,8 @@ def write_run_manifest(
         ),
         "stages": stages,
         "building_ids": args.building_ids,
+        "shape_backend": args.shape_backend,
+        "point_samples": args.point_samples,
         "building_scale_mode": args.building_scale_mode,
         "allow_missing_buildings": args.allow_missing_buildings,
         "vlm_review": {
@@ -838,6 +889,8 @@ def main() -> None:
 
     if args.vlm_max_attempts <= 0:
         raise ValueError("--vlm-max-attempts must be positive.")
+    if args.point_samples <= 0:
+        raise ValueError("--point-samples must be positive.")
     (
         args.resolved_scene_plan,
         args.scene_plan_path_resolved,
@@ -871,6 +924,9 @@ def main() -> None:
     if args.scene_plan_path_resolved is not None:
         print(f"  plan path:   {args.scene_plan_path_resolved}")
     print(f"  VLM review:  {args.enable_vlm_review}")
+    print(f"  shape model: {args.shape_backend}")
+    if args.shape_backend == "omni":
+        print(f"  point count: {args.point_samples}")
     print(f"  scale mode:  {args.building_scale_mode}")
     print(f"  stages:      {', '.join(stages)}")
     print(f"  output:      {PROJECT_ROOT / 'output' / args.case_name}")

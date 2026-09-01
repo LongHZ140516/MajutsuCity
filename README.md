@@ -55,8 +55,9 @@ conda env create -f environment.yml
 conda activate majutsucity
 ```
 
-Obtain the official Hunyuan3D-2.1 source checkout, place it at
-`external/Hunyuan3D-2.1`, and compile its two custom extensions as described in
+Place the official Hunyuan3D-Omni and Hunyuan3D-2.1 source checkouts at
+`external/Hunyuan3D-Omni` and `external/Hunyuan3D-2.1`. Compile the two
+Hunyuan3D-2.1 paint extensions as described in
 [`requirements/README.md`](requirements/README.md).
 
 ### Models and local paths
@@ -92,7 +93,9 @@ models/
 ├── Qwen-Image-Edit-2509/
 ├── Qwen-Image/
 ├── RMBG-2.0/
+├── Hunyuan3D-Omni/
 ├── Hunyuan3D-2.1/
+├── dinov2-large/
 └── dinov2-giant/
 ```
 
@@ -103,7 +106,9 @@ models/
 | Qwen Image Edit 2509 | [`Qwen/Qwen-Image-Edit-2509`](https://huggingface.co/Qwen/Qwen-Image-Edit-2509) |
 | Qwen Image | [`Qwen/Qwen-Image`](https://huggingface.co/Qwen/Qwen-Image) |
 | RMBG-2.0 | [`briaai/RMBG-2.0`](https://huggingface.co/briaai/RMBG-2.0) |
-| Hunyuan3D-2.1 | [`tencent/Hunyuan3D-2.1`](https://huggingface.co/tencent/Hunyuan3D-2.1) |
+| Hunyuan3D-Omni shape model | [`tencent/Hunyuan3D-Omni`](https://huggingface.co/tencent/Hunyuan3D-Omni) |
+| Hunyuan3D-2.1 paint model | [`tencent/Hunyuan3D-2.1`](https://huggingface.co/tencent/Hunyuan3D-2.1) |
+| DINOv2 Large (Omni encoder) | [`facebook/dinov2-large`](https://huggingface.co/facebook/dinov2-large) |
 | DINOv2 Giant | [`facebook/dinov2-giant`](https://huggingface.co/facebook/dinov2-giant) |
 
 Model weights are loaded locally and are not downloaded automatically during a
@@ -161,10 +166,13 @@ python scripts/generate_city.py \
 
 </details>
 
-The end-to-end pipeline generates building and environment assets, including
-ground, road, vegetation, water, and skybox textures, before assembling the
-Blender scene. Existing intermediate results are reused; add `--overwrite` to
-regenerate them.
+For each building, the end-to-end pipeline samples the layout-derived gray mesh
+to `points_ascii.ply`, uses the edited image and point cloud to generate shape
+with Hunyuan3D-Omni, and applies PBR texture with Hunyuan3D-2.1 Paint. It also
+generates ground, road, vegetation, water, and skybox textures before Blender
+assembly. Existing intermediate results are reused; add `--overwrite` to
+regenerate them. Use `--shape-backend 2.1` only for the image-only compatibility
+path.
 
 ### Outputs
 

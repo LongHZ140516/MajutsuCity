@@ -1110,6 +1110,8 @@ def hunyuan_command(
         gpu_id,
         "--stage",
         stage,
+        "--shape-backend",
+        "2.1",
         "--seed",
         str(args.seed),
         "--shape-steps",

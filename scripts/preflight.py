@@ -9,7 +9,6 @@ import json
 import os
 import shutil
 import subprocess
-import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -80,7 +79,9 @@ PACKAGE_MODULES = {
     "PyYAML": "yaml",
     "realesrgan": "realesrgan",
     "scikit-image": "skimage",
+    "scipy": "scipy",
     "torch": "torch",
+    "torchdiffeq": "torchdiffeq",
     "torchvision": "torchvision",
     "transformers": "transformers",
     "trimesh": "trimesh",
@@ -130,7 +131,9 @@ ROLE_PACKAGES = {
         "Pillow",
         "pymeshlab",
         "realesrgan",
+        "scipy",
         "torch",
+        "torchdiffeq",
         "torchvision",
         "transformers",
         "trimesh",
@@ -151,8 +154,10 @@ VALIDATED_VERSION_PREFIXES = {
     "pytorch-lightning": "1.9.",
     "PyYAML": "6.0.",
     "scikit-image": "0.24.",
+    "scipy": "1.14.",
     "torch": "2.6.",
     "torchvision": "0.21.",
+    "torchdiffeq": "0.2.5",
     "transformers": "4.57.",
     "trimesh": "4.4.",
     "vtk": "9.5.",
@@ -468,13 +473,27 @@ def check_3d_assets(config: dict[str, Any], reporter: Reporter) -> None:
             ("config.json", "model.safetensors"),
         ),
         (
-            "Hunyuan3D-2.1 weights",
+            "Hunyuan3D-Omni weights",
+            ("paths", "models", "hunyuan3d_omni"),
+            (
+                "model/config.json",
+                "vae/config.json",
+                "cond_encoder/config.json",
+                "scheduler/config.json",
+                "image_processor/config.json",
+            ),
+        ),
+        (
+            "Hunyuan3D-2.1 Paint weights",
             ("paths", "models", "hunyuan3d"),
             (
-                "hunyuan3d-dit-v2-1/model.fp16.ckpt",
-                "hunyuan3d-vae-v2-1/model.fp16.ckpt",
                 "hunyuan3d-paintpbr-v2-1/model_index.json",
             ),
+        ),
+        (
+            "DINOv2 Large for Hunyuan3D-Omni",
+            ("paths", "models", "dinov2_omni"),
+            ("config.json", "model.safetensors"),
         ),
         (
             "DINOv2 Giant",
@@ -502,10 +521,29 @@ def check_3d_assets(config: dict[str, Any], reporter: Reporter) -> None:
             config_path(config, reporter, label, *keys),
         )
 
+    omni_repo = config_path(
+        config,
+        reporter,
+        "Hunyuan3D-Omni source",
+        "paths",
+        "external",
+        "hunyuan3d_omni_repo",
+    )
+    check_directory(
+        reporter,
+        "3D runtime",
+        "Hunyuan3D-Omni source",
+        omni_repo,
+        (
+            "hy3dshape/pipelines/pipeline_generation_sit_omni.py",
+            "hy3dshape/models/conditioners/omni_encoder.py",
+        ),
+    )
+
     repo = config_path(
         config,
         reporter,
-        "Hunyuan source",
+        "Hunyuan3D-2.1 source",
         "paths",
         "external",
         "hunyuan3d_repo",
@@ -513,10 +551,9 @@ def check_3d_assets(config: dict[str, Any], reporter: Reporter) -> None:
     check_directory(
         reporter,
         "3D runtime",
-        "Hunyuan source",
+        "Hunyuan3D-2.1 source",
         repo,
         (
-            "hy3dshape/hy3dshape",
             "hy3dpaint/textureGenPipeline.py",
             "hy3dpaint/cfgs/hunyuan-paint-pbr.yaml",
             "hy3dpaint/ckpt/RealESRGAN_x4plus.pth",
