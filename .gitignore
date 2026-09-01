@@ -1,0 +1,52 @@
+# Machine-local configuration and environments
+configs/paths.local.yaml
+envs/
+/main_record.py
+
+# Model weights and third-party checkouts
+models/*
+external/*
+ckpt/
+
+# Generated pipeline artifacts
+output/
+outputs/
+*.blend
+*.blend1
+*.glb
+
+# Local layout training/evaluation artifacts (source scripts stay versioned)
+layout_gen/results/
+layout_gen/logs/
+layout_gen/checkpoints/
+layout_gen/**/*.ckpt
+layout_gen/**/*.pt
+layout_gen/**/*.pth
+layout_gen/**/*.safetensors
+
+# Python/editor caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+.DS_Store
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+.idea/
+.vscode/
+.agents/
+.codex/
+
+# Local credentials and shell environment overrides
+.env
+.env.*
+!.env.example

@@ -1,0 +1,16 @@
+# Install after preparing the Hunyuan3D-2.1 Python 3.10 environment and its
+# compiled extensions. These versions merge the Qwen and Syncity runtimes and
+# upgrade the final environment to the validated PyTorch 2.6 / CUDA 12.4 stack.
+accelerate==1.13.0
+diffusers==0.37.1
+huggingface-hub==0.36.2
+kornia==0.8.2
+kornia-rs==0.1.10
+peft==0.17.0
+pyvista==0.46.5
+tokenizers==0.22.2
+torch==2.6.0
+torchaudio==2.6.0
+torchvision==0.21.0
+transformers==4.57.3
+vtk==9.5.2

@@ -1,0 +1,6 @@
+# Complete MajutsuCity Python dependency entry point.
+# Hunyuan3D CUDA extensions are compiled separately; see requirements/README.md.
+-r requirements/hunyuan3d.txt
+-r requirements/runtime-overlay.txt
+-r requirements/pipeline.txt
+-r requirements/layout.txt

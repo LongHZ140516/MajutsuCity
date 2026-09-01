@@ -1,0 +1,42 @@
+version: 1
+
+# All relative paths are resolved from the repository root. Keep this example
+# tracked; copy it to paths.local.yaml for machine-specific changes.
+paths:
+  interpreters:
+    controller: envs/majutsucity/bin/python
+    layout: envs/majutsucity/bin/python
+    render: envs/majutsucity/bin/python
+    qwen: envs/majutsucity/bin/python
+    hunyuan: envs/majutsucity/bin/python
+    blender: envs/majutsucity/bin/python
+
+  models:
+    longclip: models/LongCLIP-L/longclip-L.pt
+    qwen_image_edit: models/Qwen-Image-Edit-2509
+    qwen_image: models/Qwen-Image
+    texture_lora: models/MajutsuCity/texture/Texture_Lora.safetensors
+    skybox_lora: models/MajutsuCity/texture/SkyBox_Lora.safetensors
+    rmbg: models/RMBG-2.0
+    hunyuan3d: models/Hunyuan3D-2.1
+    dinov2: models/dinov2-giant
+
+  external:
+    hunyuan3d_repo: external/Hunyuan3D-2.1
+
+layout_generation:
+  layout_model_config: layout_gen/models/cldm_v21.yaml
+  height_model_config: layout_gen/models/cldm_v21_height.yaml
+  layout_checkpoint: models/MajutsuCity/layout/layout_generation.ckpt
+  height_checkpoint: models/MajutsuCity/layout/height_generation.ckpt
+  layout_prompt: >-
+    A semantic city layout with connected roads, varied building blocks,
+    vegetation patches, and open public space.
+  height_prompt: >-
+    A standard height map generated from the input semantic layout map.
+
+runtime:
+  # Qwen Image Edit needs two GPUs per worker group.
+  qwen_gpu_groups: "0,1"
+  # Hunyuan3D uses one GPU per worker.
+  hunyuan_gpus: "0,1"

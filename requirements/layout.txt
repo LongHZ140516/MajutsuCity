@@ -1,0 +1,9 @@
+# Installed through the root requirements.txt entry point for the
+# optional text-to-layout and layout-to-height inference stages.
+einops==0.8.0
+ftfy==6.2.3
+omegaconf==2.3.0
+open-clip-torch==2.24.0
+pytorch-lightning==1.9.5
+regex==2026.5.9
+safetensors==0.4.4

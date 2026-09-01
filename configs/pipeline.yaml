@@ -1,0 +1,21 @@
+version: 1
+defaults:
+  style: cyberpunk
+  case_name: SE-Stockholm_64
+  stages:
+    - buildings
+    - environment
+    - scene
+  layout_palette: auto
+  edit_profile: legacy
+  execution_order: phase
+  building_scale_mode: depth
+  building_ids: all
+  vlm_max_attempts: 3
+  seed: 42
+
+llm:
+  prompt_file: configs/scene_planner_prompts.json
+  timeout: 120
+  max_retries: 2
+  plan_attempts: 2

@@ -1,0 +1,6 @@
+numpy==1.24.4
+opencv-python-headless==4.11.0.86
+openai==2.41.0
+Pillow==11.3.0
+PyYAML==6.0.2
+scikit-image==0.24.0
